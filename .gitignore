@@ -1,0 +1,16 @@
+# Klíče a tajemství - do repozitáře nikdy
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# Systémové
+.DS_Store
+node_modules/
+*.log
+logs/
+
+# Lokální stav
+zara/skills/**/node_modules/

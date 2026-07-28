@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Denní sync korpusu z živých zdrojů + incremental reindex.
+# Uprav zdroje podle sebe; kopíruje se DO notes-prod/ (kopie, ne originály).
+set -euo pipefail
+cd "$(dirname "$0")"
+
+echo "=== sync $(date '+%Y-%m-%d %H:%M:%S') ==="
+
+# Zdroj 1: doménová wiki (mirror — smazané stránky zmizí i z indexu)
+rsync -a --delete "$HOME/business-wiki/wiki/" notes-prod/business-wiki/
+
+# Zdroj 2: další obsah, jen .md (příklad: publikované blogy)
+# rsync -a --delete --include='*.md' --exclude='*' "$HOME/Projects/muj-blog/finaly/" notes-prod/blogy/
+
+# Incremental reindex (stejné prostředí jako MCP server)
+set -a; . ./.env; set +a
+export EMBED_DEVICE=cpu   # MPS na torch 2.12 zamrzá; CPU je spolehlivé
+export TOKENIZERS_PARALLELISM=false
+.venv/bin/python cli.py index
+
+echo "=== done $(date '+%Y-%m-%d %H:%M:%S') ==="
