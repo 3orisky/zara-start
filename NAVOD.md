@@ -1,5 +1,9 @@
 # Návod krok za krokem
 
+> **ARCHIV - nepoužívat.** Od září 2026 se balíky pro klientky staví na míru (zara-lucia, zara-camellia). Tenhle obecný balík se dál neudržuje a jsou v něm zbytky Janiných dat. Zůstává tu jen jako záloha a zdroj textů.
+
+---
+
 Psané pro člověka, který v terminálu není doma. Když se někde zasekneš, zkopíruj chybu a zeptej se Clauda, ten ti to přeloží.
 
 > **Máš holubník nebo jsi na Windows?** Použij [NAVOD-KLIENTKA.md](NAVOD-KLIENTKA.md) - je tam Mac i Windows (WSL) a navíc propojení na holubník z terminálu.

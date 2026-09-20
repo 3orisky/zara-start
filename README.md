@@ -1,5 +1,9 @@
 # Zara Start
 
+> **ARCHIV - nepoužívat.** Od září 2026 se balíky pro klientky staví na míru (zara-lucia, zara-camellia). Tenhle obecný balík se dál neudržuje a jsou v něm zbytky Janiných dat. Zůstává tu jen jako záloha a zdroj textů.
+
+---
+
 Kompletní mozek pro Claude Code na novém počítači. Jeden balíček, jeden příkaz, hotovo.
 
 Uvnitř je asistentka **Zara** (systém PAI), **99 skillů**, **12 agentů**, **paměťový systém** ve čtyřech vrstvách, šablona doménové wiki a čtyři rozšíření, která si Claude sám neumí přidat.

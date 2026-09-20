@@ -1,5 +1,9 @@
 # Claude Code + Zara + holubník na tvém počítači
 
+> **ARCHIV - nepoužívat.** Od září 2026 se balíky pro klientky staví na míru (zara-lucia, zara-camellia). Tenhle obecný balík se dál neudržuje a jsou v něm zbytky Janiných dat. Zůstává tu jen jako záloha a zdroj textů.
+
+---
+
 Návod krok za krokem pro klientku, která má (nebo bude mít) holubník a chce ho ovládat
 i z počítače, ne jenom z Telegramu.
 
