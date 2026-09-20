@@ -2,6 +2,8 @@
 
 Psané pro člověka, který v terminálu není doma. Když se někde zasekneš, zkopíruj chybu a zeptej se Clauda, ten ti to přeloží.
 
+> **Máš holubník nebo jsi na Windows?** Použij [NAVOD-KLIENTKA.md](NAVOD-KLIENTKA.md) - je tam Mac i Windows (WSL) a navíc propojení na holubník z terminálu.
+
 ---
 
 ## 1. Co musíš mít předem

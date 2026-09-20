@@ -1,0 +1,734 @@
+<title>Holubník z počítače</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
+
+<style>
+:root {
+  --ground: #FBFAF7;
+  --surface: #FFFFFF;
+  --surface-2: #F2F4F1;
+  --ink: #14201E;
+  --ink-soft: #55655E;
+  --ink-faint: #7E8C86;
+  --line: #E1E5DF;
+  --line-strong: #C8D0CA;
+  --accent: #1B6B5A;
+  --accent-ink: #10493D;
+  --accent-soft: #E5F0EC;
+  --warn: #8A5410;
+  --warn-soft: #F6EEE1;
+  --code-ground: #16211F;
+  --code-ink: #DCE7E2;
+  --code-line: #2A3A36;
+
+  --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-body: "Karla", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 68ch;
+  --radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0F1514;
+    --surface: #161F1D;
+    --surface-2: #1C2725;
+    --ink: #E7EDE9;
+    --ink-soft: #A0AEA8;
+    --ink-faint: #7B8A84;
+    --line: #253230;
+    --line-strong: #33443F;
+    --accent: #5FCFB2;
+    --accent-ink: #8FE0C9;
+    --accent-soft: #16302A;
+    --warn: #DBA55F;
+    --warn-soft: #2A2317;
+    --code-ground: #0A100F;
+    --code-ink: #D3E0DB;
+    --code-line: #22302C;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground: #0F1514;
+  --surface: #161F1D;
+  --surface-2: #1C2725;
+  --ink: #E7EDE9;
+  --ink-soft: #A0AEA8;
+  --ink-faint: #7B8A84;
+  --line: #253230;
+  --line-strong: #33443F;
+  --accent: #5FCFB2;
+  --accent-ink: #8FE0C9;
+  --accent-soft: #16302A;
+  --warn: #DBA55F;
+  --warn-soft: #2A2317;
+  --code-ground: #0A100F;
+  --code-ink: #D3E0DB;
+  --code-line: #22302C;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 56px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px 120px;
+}
+
+/* ---------- navigace ---------- */
+nav.toc {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding-top: 64px;
+  max-height: 100vh;
+  overflow-y: auto;
+  font-size: 14px;
+}
+nav.toc p {
+  margin: 0 0 12px;
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 700;
+}
+nav.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+nav.toc a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  display: block;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid var(--line);
+  line-height: 1.35;
+}
+nav.toc a:hover, nav.toc a:focus-visible {
+  color: var(--accent-ink);
+  border-left-color: var(--accent);
+}
+
+main { padding-top: 64px; min-width: 0; }
+
+/* ---------- hlavička ---------- */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+h1 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(38px, 6vw, 60px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+  max-width: 16ch;
+}
+.lede {
+  font-family: var(--f-display);
+  font-size: clamp(19px, 2.3vw, 22px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 0 34px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 60px;
+}
+.meta div {
+  flex: 1 1 150px;
+  padding: 14px 18px 14px 0;
+}
+.meta dt {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.meta dd { margin: 0; font-size: 15px; color: var(--ink); }
+
+/* ---------- sekce ---------- */
+section { margin-bottom: 68px; scroll-margin-top: 24px; }
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(26px, 3.4vw, 33px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+  text-wrap: balance;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+h2 .mark {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  flex: none;
+  transform: translateY(-3px);
+}
+h3 {
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  margin: 34px 0 10px;
+  color: var(--ink);
+}
+h3 .num {
+  font-family: var(--f-mono);
+  color: var(--accent);
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+p, ul, ol { max-width: var(--measure); }
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin-bottom: 6px; }
+li::marker { color: var(--ink-faint); }
+a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+strong { font-weight: 700; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+.section-note {
+  color: var(--ink-soft);
+  max-width: var(--measure);
+  margin-bottom: 22px;
+}
+
+/* ---------- kód ---------- */
+.cmd {
+  position: relative;
+  background: var(--code-ground);
+  border: 1px solid var(--code-line);
+  border-radius: var(--radius);
+  margin: 0 0 16px;
+  max-width: var(--measure);
+  overflow-x: auto;
+}
+.cmd pre {
+  margin: 0;
+  padding: 14px 62px 14px 16px;
+  font-family: var(--f-mono);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--code-ink);
+  white-space: pre;
+}
+.cmd .prompt { color: #5FCFB2; user-select: none; }
+.cmd .cmt { color: #7B8A84; }
+.cmd button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: var(--f-body);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #9BB3AB;
+  background: transparent;
+  border: 1px solid var(--code-line);
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.cmd button:hover { color: #DCE7E2; border-color: #4A5D58; }
+code {
+  font-family: var(--f-mono);
+  font-size: 0.87em;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* ---------- panely ---------- */
+.note {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 14px 18px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 0 0 20px;
+  max-width: var(--measure);
+}
+.note.money { border-left-color: var(--warn); background: var(--warn-soft); }
+.note p:last-child { margin-bottom: 0; }
+.note .label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-ink);
+  margin-bottom: 5px;
+}
+.note.money .label { color: var(--warn); }
+
+/* ---------- tabulky ---------- */
+.tablewrap { overflow-x: auto; max-width: var(--measure); margin-bottom: 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td {
+  text-align: left;
+  padding: 10px 14px 10px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th {
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 700;
+  border-bottom-color: var(--line-strong);
+}
+td code { white-space: nowrap; }
+
+/* ---------- přepínač systému ---------- */
+.switch {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  padding: 3px;
+  gap: 3px;
+  background: var(--surface);
+  margin-bottom: 26px;
+}
+.switch button {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 100px;
+  padding: 7px 18px;
+  cursor: pointer;
+}
+.switch button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--ground);
+}
+[data-os] { display: none; }
+[data-os].on { display: block; }
+
+/* ---------- volby propojení ---------- */
+.route {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  max-width: var(--measure);
+}
+.route h3 { margin-top: 0; }
+.route .tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-radius: 3px;
+  padding: 3px 7px;
+  margin-left: 8px;
+  vertical-align: 2px;
+}
+.route p, .route ul, .route .cmd, .route .tablewrap { max-width: none; }
+
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  color: var(--ink-faint);
+  font-size: 14px;
+  max-width: var(--measure);
+}
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 0; padding: 0 20px 80px; }
+  nav.toc { position: static; padding-top: 40px; max-height: none; }
+  nav.toc ol { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; }
+  nav.toc a { border-left: 0; padding-left: 0; border-bottom: 2px solid var(--line); }
+  main { padding-top: 34px; }
+}
+</style>
+
+<div class="wrap">
+
+<nav class="toc">
+  <p>Obsah</p>
+  <ol>
+    <li><a href="#pred">Než začneš</a></li>
+    <li><a href="#instalace">Instalace</a></li>
+    <li><a href="#zara">První rozhovor</a></li>
+    <li><a href="#holubnik">Propojení na holubník</a></li>
+    <li><a href="#denne">Denní používání</a></li>
+    <li><a href="#problem">Když se něco pokazí</a></li>
+    <li><a href="#bezpeci">Bezpečnost</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<p class="eyebrow">Návod krok za krokem</p>
+<h1>Holubník z počítače</h1>
+<p class="lede">Claude Code, Zara a tvůj tým holoubků v jednom okně terminálu. Telegram nikam nemizí, tohle je práce s pořádnou klávesnicí.</p>
+
+<dl class="meta">
+  <div><dt>Čas</dt><dd>45 min na Macu, hodina na Windows</dd></div>
+  <div><dt>Předpoklad</dt><dd>Předplatné Claude Pro nebo Max</dd></div>
+  <div><dt>Znalosti</dt><dd>Žádné, příkazy jen kopíruješ</dd></div>
+</dl>
+
+<section id="pred">
+  <h2><span class="mark">1</span>Než začneš</h2>
+  <p class="section-note">Tři věci, které si instaluješ, a co každá dělá.</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Co</th><th>K čemu to je</th></tr>
+    <tr><td><strong>Claude Code</strong></td><td>Claude přímo v počítači. Vidí tvoje soubory, umí je psát a upravovat.</td></tr>
+    <tr><td><strong>Zara</strong></td><td>Mozek nad Claude Code: paměť, dovednosti, tvoje wiki, tvůj styl psaní.</td></tr>
+    <tr><td><strong>Propojení na holubník</strong></td><td>Příkaz <code>holubnik</code>, kterým zadáváš práci Rozárce a celému týmu.</td></tr>
+  </table>
+  </div>
+
+  <h3>Co si nachystej</h3>
+  <ul>
+    <li><strong>Předplatné Claude Pro nebo Max</strong> na claude.ai. Free plán Claude Code neumí.</li>
+    <li><strong>Balíček „zara-start"</strong>. Pozvánku do repozitáře nebo ZIP dostaneš ode mě.</li>
+    <li><strong>Údaje k holubníku</strong>: adresa serveru a přihlášení. Pošlu ti je zvlášť.</li>
+    <li><strong>Systém</strong>: macOS 13 a výš, nebo Windows 10 (verze 1809) a výš, 4 GB RAM.</li>
+  </ul>
+
+  <div class="note">
+    <span class="label">Klid v duši</span>
+    <p>Holubník ti běží na vlastním serveru a běží dál. Nic z toho, co teď instaluješ, ho nenahrazuje ani nepřesouvá. Instaluješ si jenom ovladač, tedy okno, kterým do něj mluvíš.</p>
+  </div>
+</section>
+
+<section id="instalace">
+  <h2><span class="mark">2</span>Instalace</h2>
+  <p class="section-note">Vyber si svůj systém, návod se přepne. Vždycky, když uvidíš tmavý rámeček, zkopíruj jeho obsah do terminálu a dej Enter.</p>
+
+  <div class="switch" role="group" aria-label="Vyber operační systém">
+    <button type="button" data-pick="mac" aria-pressed="true">Mac</button>
+    <button type="button" data-pick="win" aria-pressed="false">Windows</button>
+  </div>
+
+  <!-- ---------------- MAC ---------------- -->
+  <div data-os="mac" class="on">
+    <h3><span class="num">2.1</span>Otevři Terminál</h3>
+    <p>Stiskni <strong>⌘ + mezerník</strong>, napiš <code>Terminál</code>, potvrď Enterem.</p>
+
+    <h3><span class="num">2.2</span>Nainstaluj Claude Code</h3>
+    <div class="cmd"><pre>curl -fsSL https://claude.ai/install.sh | bash</pre></div>
+    <p>Až to doběhne, <strong>zavři okno terminálu a otevři nové</strong>. Jinak počítač příkaz <code>claude</code> ještě nezná. Pak ověř:</p>
+    <div class="cmd"><pre>claude --version</pre></div>
+    <p>Musí vypsat číslo verze. Když píše <code>command not found</code>:</p>
+    <div class="cmd"><pre>echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.zshrc
+source ~/.zshrc</pre></div>
+
+    <h3><span class="num">2.3</span>Přihlas se</h3>
+    <div class="cmd"><pre>claude</pre></div>
+    <p>Otevře se prohlížeč, přihlas se svým účtem Claude. Pak v okně Clauda napiš <code>/exit</code>.</p>
+
+    <h3><span class="num">2.4</span>Stáhni balíček Zara</h3>
+    <div class="cmd"><pre>git clone https://github.com/3orisky/zara-start.git ~/zara-start</pre></div>
+    <p>Když ti napíše, že <code>git</code> nezná, spusť <code>xcode-select --install</code>, počkej pár minut, až se doinstalují vývojářské nástroje, a příkaz zopakuj. Když jsi dostala ZIP, rozbal ho a přesuň složku tak, aby cesta byla <code>~/zara-start</code>.</p>
+
+    <h3><span class="num">2.5</span>Nainstaluj Zaru</h3>
+    <div class="cmd"><pre>cd ~/zara-start
+bash install.sh</pre></div>
+    <p>Instalátor ověří Claude Code a Bun (Bun ti nabídne doinstalovat, odpověz <code>a</code>), zeptá se, jak ti má Zara říkat, <strong>zazálohuje</strong> cokoliv, co už v <code>~/.claude</code> máš, a nakopíruje mozek, paměť a wiki. Trvá to zhruba minutu.</p>
+    <p>Potom <strong>zavři terminál a otevři nový</strong>.</p>
+  </div>
+
+  <!-- ---------------- WINDOWS ---------------- -->
+  <div data-os="win">
+    <div class="note">
+      <span class="label">Jedno okno navíc</span>
+      <p>Zara je psaná pro linuxové prostředí, takže na Windows pojede uvnitř <strong>WSL 2</strong>. Není to virtuál, který by ses musela učit. Je to jenom další okno terminálu, které se chová jako Mac.</p>
+    </div>
+
+    <h3><span class="num">2.1</span>Zapni WSL 2</h3>
+    <p>Start → napiš <code>PowerShell</code> → klikni pravým na <em>Windows PowerShell</em> → <strong>Spustit jako správce</strong>. Do okna napiš:</p>
+    <div class="cmd"><pre>wsl --install</pre></div>
+    <p>Nainstaluje se Ubuntu. <strong>Restartuj počítač.</strong> Po restartu se Ubuntu samo otevře a zeptá se na uživatelské jméno (malá písmena bez diakritiky) a heslo. Heslo se při psaní nezobrazuje ani hvězdičkami, to je normální. Zapamatuj si ho, budeš ho potřebovat u příkazů se <code>sudo</code>.</p>
+    <p>Když <code>wsl --install</code> skončí chybou, zapni ve funkcích Windows položky „Platforma virtuálního počítače" a „Podsystém Windows pro Linux", restartuj a příkaz zopakuj.</p>
+
+    <div class="note">
+      <span class="label">Od téhle chvíle</span>
+      <p>Všechno další píšeš do okna <strong>Ubuntu</strong> (najdeš ho v nabídce Start), ne do PowerShellu.</p>
+    </div>
+
+    <h3><span class="num">2.2</span>Připrav Ubuntu</h3>
+    <div class="cmd"><pre>sudo apt update &amp;&amp; sudo apt install -y curl git unzip</pre></div>
+    <p>Vyžádá si heslo z předchozího kroku.</p>
+
+    <h3><span class="num">2.3</span>Nainstaluj Claude Code</h3>
+    <div class="cmd"><pre>curl -fsSL https://claude.ai/install.sh | bash</pre></div>
+    <p>Zavři okno Ubuntu, otevři nové a ověř:</p>
+    <div class="cmd"><pre>claude --version</pre></div>
+    <p>Když píše <code>command not found</code>:</p>
+    <div class="cmd"><pre>echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.bashrc
+source ~/.bashrc</pre></div>
+
+    <h3><span class="num">2.4</span>Přihlas se</h3>
+    <div class="cmd"><pre>claude</pre></div>
+    <p>Otevře se prohlížeč ve Windows, přihlas se účtem Claude. Pak napiš <code>/exit</code>.</p>
+
+    <h3><span class="num">2.5</span>Nainstaluj Zaru</h3>
+    <div class="cmd"><pre>git clone https://github.com/3orisky/zara-start.git ~/zara-start
+cd ~/zara-start
+bash install.sh</pre></div>
+    <p>Instalátor napíše varování, že je psaný pro macOS. <strong>To je v pořádku</strong>, v Ubuntu doběhne. Odpověz <code>a</code> na doinstalování Bunu a zadej svoje jméno. Potom zavři okno Ubuntu a otevři nové.</p>
+
+    <h3><span class="num">2.6</span>Kde mám svoje soubory</h3>
+    <p>Ubuntu má vlastní domovskou složku. K dokumentům z Windows se dostaneš přes:</p>
+    <div class="cmd"><pre>cd /mnt/c/Users/<span class="cmt">&lt;TvojeWindowsJmeno&gt;</span>/Documents</pre></div>
+    <p>A naopak, do složek Ubuntu se dostaneš z Průzkumníka souborů: do adresního řádku napiš <code>\\wsl$\Ubuntu\home\&lt;tvoje-jmeno&gt;</code>. Pracovní soubory pro Zaru ale drž radši v Ubuntu (<code>~/Projects/...</code>), je to výrazně rychlejší.</p>
+  </div>
+</section>
+
+<section id="zara">
+  <h2><span class="mark">3</span>První rozhovor se Zarou</h2>
+  <p>V terminálu napiš <code>claude</code> a pak Zaře tohle:</p>
+  <div class="cmd"><pre>Přečti si skills/PAI/SKILL.md a doptej se mě, kdo jsem.
+Vyplň si můj profil.</pre></div>
+  <p>Zara se tě postupně zeptá, čím se živíš, jak s tebou má mluvit a co má vědět o tvé práci. Odpovědi si uloží. Kdykoliv později můžeš říct „aktualizuj si můj profil".</p>
+
+  <h3>Ověř, že jí funguje paměť</h3>
+  <p>Napiš „zapamatuj si, že moje hlavní cílovka jsou …", zavři okno, otevři nové a zeptej se „co víš o mojí cílovce?". Když odpoví, je hotovo.</p>
+
+  <h3>Naplň wiki</h3>
+  <p>Nepovinné, ale vyplatí se. <code>~/business-wiki/</code> je znalostní báze o tvém podnikání: produkty, ceny, procesy, čísla. Zara si ji čte, kdykoliv řešíš byznys, a přestane hádat. Hoď do <code>~/business-wiki/raw/</code> cokoliv, co máš (ceník, export z fakturace, popisy produktů) a řekni: <em>„Zpracuj raw/&lt;soubor&gt; do wiki podle WIKI.md."</em></p>
+</section>
+
+<section id="holubnik">
+  <h2><span class="mark">4</span>Propojení na holubník</h2>
+  <p class="section-note">Holubník má vlastní API, přes které s ním mluví Telegram i nástěnka. Stejným API ho budeš ovládat z počítače příkazem <code>holubnik</code>.</p>
+
+  <div class="cmd"><pre>holubnik "napiš newsletter o migrénách"   <span class="cmt"># úkol pro Rozárku</span>
+holubnik tasks                            <span class="cmt"># nástěnka úkolů</span>
+holubnik usage                            <span class="cmt"># kolik se utratilo (tokeny / Kč)</span>
+holubnik agents                           <span class="cmt"># stav holoubků</span>
+holubnik memory rozarka                   <span class="cmt"># co si který holoubek pamatuje</span>
+holubnik health                           <span class="cmt"># žije to?</span>
+holubnik restart                          <span class="cmt"># restart (jen na serveru)</span></pre></div>
+
+  <div class="note money">
+    <span class="label">Dvě oddělené peněženky</span>
+    <p>Příkaz <code>holubnik</code> běží přes <strong>API klíč tvého holubníku</strong>, takže se objeví ve vyúčtování Anthropicu stejně jako práce holoubků. Naopak <code>claude</code> v terminálu (Zara) jede z tvého <strong>předplatného Pro nebo Max</strong>. Nepletou se.</p>
+  </div>
+
+  <p>Vyber si jednu ze dvou cest.</p>
+
+  <div class="route">
+    <h3>Přes server<span class="tag">Doporučeno na začátek</span></h3>
+    <p>Nic se nenastavuje a nic se nevystavuje do internetu. Příkaz je na serveru už nainstalovaný a přístup si najde sám.</p>
+    <div class="cmd"><pre>ssh uzivatel@adresa-tvojeho-serveru
+holubnik "napiš newsletter o migrénách"</pre></div>
+    <p>Přihlašovací údaje dostaneš ode mě. Když se poprvé ptá <code>Are you sure you want to continue connecting?</code>, napiš <code>yes</code>. Odhlášení ze serveru: <code>exit</code>.</p>
+    <p>Ať to nemusíš psát pokaždé celé, ulož si zkratku (na Windows místo <code>~/.zshrc</code> piš <code>~/.bashrc</code>):</p>
+    <div class="cmd"><pre>echo 'alias holubnik-ssh="ssh -t uzivatel@adresa-serveru holubnik"' &gt;&gt; ~/.zshrc</pre></div>
+    <p>V novém okně pak stačí <code>holubnik-ssh "co je dneska na nástěnce?"</code>.</p>
+  </div>
+
+  <div class="route">
+    <h3>Přímo ze svého počítače<span class="tag">Pohodlnější</span></h3>
+    <p>Tuhle cestu ti musím jednorázově zapnout na serveru (zabezpečená brána s tokenem). Dostaneš ode mě <strong>adresu API</strong>, <strong>token</strong> a soubor <code>holubnik.ts</code>.</p>
+    <p><strong>1.</strong> Bun (když jsi instalovala Zaru, už ho máš):</p>
+    <div class="cmd"><pre>curl -fsSL https://bun.sh/install | bash</pre></div>
+    <p><strong>2.</strong> Ulož <code>holubnik.ts</code> do složky <code>~/bin/</code> a udělej z něj příkaz:</p>
+    <div class="cmd"><pre>mkdir -p ~/bin
+printf '#!/usr/bin/env bash\nexec bun ~/bin/holubnik.ts "$@"\n' &gt; ~/bin/holubnik
+chmod +x ~/bin/holubnik
+echo 'export PATH="$HOME/bin:$PATH"' &gt;&gt; ~/.zshrc</pre></div>
+    <p><strong>3.</strong> Nastav adresu a token:</p>
+    <div class="cmd"><pre>echo 'export HOLUBNIK_URL="https://api.tvuj-holubnik.cz/api"' &gt;&gt; ~/.zshrc
+echo 'export HOLUBNIK_TOKEN="token-ktery-dostaneš"' &gt;&gt; ~/.zshrc
+source ~/.zshrc</pre></div>
+    <p><strong>4.</strong> Ověř:</p>
+    <div class="cmd"><pre>holubnik health
+holubnik "ahoj, ozvi se"</pre></div>
+    <p>Na Windows všude zaměň <code>~/.zshrc</code> za <code>~/.bashrc</code>.</p>
+  </div>
+
+  <h3>Ať to za tebe dělá Zara</h3>
+  <p>Nemusíš si pamatovat žádné příkazy. Řekni Zaře v okně <code>claude</code>, ať si do <code>~/.claude/CLAUDE.md</code> přidá tenhle blok:</p>
+  <div class="cmd"><pre>## Holubník
+Můj tým AI agentů (holubník) běží na vlastním serveru a ovládá se
+příkazem `holubnik` v terminálu. Když ti řeknu něco, co má udělat
+holubník (napiš newsletter, co je na nástěnce, kolik jsme utratili,
+co dělá který holoubek), použij:
+  holubnik "&lt;příkaz přirozenou řečí&gt;"   - úkol pro Rozárku
+  holubnik tasks | usage | agents | health | memory &lt;holoubek&gt;
+Než pošleš úkol, ukaž mi znění příkazu a počkej na moje ano.
+Pozor: tyhle příkazy se účtují z API klíče holubníku,
+ne z mého předplatného.</pre></div>
+  <p>Od té chvíle stačí Zaře napsat „zeptej se holubníku, co je na nástěnce". Ona to spustí, výstup přeloží do lidské řeči a může na něj rovnou navázat, třeba text upravit a poslat zpátky.</p>
+</section>
+
+<section id="denne">
+  <h2><span class="mark">5</span>Denní používání</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Chci</th><th>Napíšu</th></tr>
+    <tr><td>začít práci se Zarou</td><td><code>claude</code> v terminálu, ve složce projektu</td></tr>
+    <tr><td>aby si Zara něco zapamatovala</td><td>„zapamatuj si, že …"</td></tr>
+    <tr><td>co se dělo v jiném okně</td><td><code>/session-list</code></td></tr>
+    <tr><td>přehled dovedností</td><td>„jaké skilly máš?"</td></tr>
+    <tr><td>úkol pro holubník</td><td><code>holubnik "…"</code> nebo Zaře „zadej holubníku …"</td></tr>
+    <tr><td>co holubník dělal</td><td><code>holubnik tasks</code></td></tr>
+    <tr><td>kolik holubník stojí</td><td><code>holubnik usage</code></td></tr>
+    <tr><td>holubník nereaguje</td><td><code>holubnik health</code>, pak restart přes SSH nebo <code>/restart</code> v Telegramu</td></tr>
+  </table>
+  </div>
+  <p><strong>Telegram nikam nemizí.</strong> Ovládání z počítače je navíc, ne místo něj. Karty ke schvalování, hlasovky a rychlé ano/ne jsou v Telegramu dál pohodlnější. Počítač je na dlouhá zadání, práci s texty a na chvíle, kdy chceš vidět víc než jednu obrazovku.</p>
+  <p>Skilly Zary se <strong>nespouští samy</strong>. Zara ti napíše „pro tohle by se hodily skilly X, Y, použít?" a čeká na tvoje ano.</p>
+</section>
+
+<section id="problem">
+  <h2><span class="mark">6</span>Když se něco pokazí</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Problém</th><th>Řešení</th></tr>
+    <tr><td><code>claude: command not found</code></td><td>Zavři a otevři nové okno terminálu. Pořád nic → přidej <code>export PATH="$HOME/.local/bin:$PATH"</code> do <code>~/.zshrc</code> (Mac) nebo <code>~/.bashrc</code> (Windows).</td></tr>
+    <tr><td><code>bun: command not found</code></td><td><code>curl -fsSL https://bun.sh/install | bash</code>, pak nové okno.</td></tr>
+    <tr><td>Zara se hned po instalaci chová divně</td><td>Zavři <strong>všechna</strong> okna terminálu a otevři nové. Její doplňky se načítají při startu.</td></tr>
+    <tr><td>Chci zpátky stav před instalací</td><td>Záloha je v <code>~/.claude-zaloha-&lt;datum&gt;</code>. Smaž <code>~/.claude</code> a zálohu přejmenuj zpátky.</td></tr>
+    <tr><td><code>403</code> u příkazu holubnik</td><td>Token nesedí. Napiš mi, zkontrolujeme ho.</td></tr>
+    <tr><td><code>Nepřipojím se k holubníku</code></td><td>Špatná adresa, nebo neběží služba. Zkus to přes Telegram, a když neodpovídá ani tam, napiš mi.</td></tr>
+    <tr><td>Windows: <code>wsl --install</code> hlásí chybu</td><td>Zapni ve funkcích Windows „Platforma virtuálního počítače" a „Podsystém Windows pro Linux", restartuj.</td></tr>
+    <tr><td>Cokoliv jiného</td><td><code>claude doctor</code> vypíše diagnostiku. Nebo chybu zkopíruj celou a pošli mi ji.</td></tr>
+  </table>
+  </div>
+</section>
+
+<section id="bezpeci">
+  <h2><span class="mark">7</span>Bezpečnostní minimum</h2>
+  <ul>
+    <li><strong>Klíče a tokeny nikdy nepiš do souborů projektu.</strong> Patří do <code>~/.zshrc</code> nebo <code>~/.bashrc</code>, případně do <code>.env</code>, který je v <code>.gitignore</code>.</li>
+    <li><code>HOLUBNIK_TOKEN</code> má stejnou sílu jako klíč od celého holubníku. Když unikne, napiš mi, výměna je otázka minuty.</li>
+    <li>Do paměti Zary ani do wiki nepiš hesla, čísla účtů a rodná čísla.</li>
+    <li>Zara se u nebezpečných příkazů ptá „opravdu?". Čti to, odpovědnost je pořád tvoje.</li>
+    <li>Když počítač ztratíš nebo prodáváš: smaž <code>~/.claude</code>, <code>~/zara-start</code> a řádky s tokeny z <code>~/.zshrc</code> nebo <code>~/.bashrc</code>, a řekni mi, ať vyměním token.</li>
+  </ul>
+</section>
+
+<footer>
+  Zasekneš se kdekoliv? Zkopíruj celou chybu a pošli mi ji. Většina zádrhelů má opravu na jeden řádek.
+</footer>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var KEY = "navod-os";
+  var buttons = document.querySelectorAll(".switch button");
+  var blocks = document.querySelectorAll("[data-os]");
+
+  function pick(os) {
+    buttons.forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.pick === os));
+    });
+    blocks.forEach(function (el) {
+      el.classList.toggle("on", el.dataset.os === os);
+    });
+    try { localStorage.setItem(KEY, os); } catch (e) {}
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () { pick(b.dataset.pick); });
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved !== "mac" && saved !== "win") {
+    saved = /Win/i.test(navigator.platform || navigator.userAgent) ? "win" : "mac";
+  }
+  pick(saved);
+
+  document.querySelectorAll(".cmd").forEach(function (box) {
+    var pre = box.querySelector("pre");
+    if (!pre) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Kopírovat";
+    btn.addEventListener("click", function () {
+      var text = Array.prototype.filter
+        .call(pre.childNodes, function (n) {
+          return !(n.nodeType === 1 && n.classList.contains("cmt"));
+        })
+        .map(function (n) { return n.textContent; })
+        .join("")
+        .split("\n")
+        .map(function (l) { return l.replace(/\s+$/, ""); })
+        .join("\n")
+        .trim();
+      var done = function () {
+        btn.textContent = "Zkopírováno";
+        setTimeout(function () { btn.textContent = "Kopírovat"; }, 1600);
+      };
+      try {
+        navigator.clipboard.writeText(text).then(done, function () { select(); });
+      } catch (e) { select(); }
+      function select() {
+        var r = document.createRange();
+        r.selectNodeContents(pre);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        btn.textContent = "Označeno, zkopíruj";
+        setTimeout(function () { btn.textContent = "Kopírovat"; }, 2200);
+      }
+    });
+    box.appendChild(btn);
+  });
+})();
+</script>
